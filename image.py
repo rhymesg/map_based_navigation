@@ -1,5 +1,6 @@
 import math
 import copy
+import numpy as np
 
 
 class GroundObject:
@@ -45,30 +46,41 @@ def get_fov(size_x, size_y, z, fov_x_deg):
     return fov_x, fov_y
 
 
-def get_aerial_image(database: Image, x, y, z, size_x, size_y, fov_x_deg):
+def get_aerial_image(database: Image, x, y, z, size_x, size_y, fov_x_deg, attitude_error_std_rad, pixel_error_std):
     image = Image(size_x, size_y)
     fov_x, fov_y = get_fov(image.size_x, image.size_y, z, fov_x_deg)
-
-    print("fov_x: {0:.2f} m, fov_y: {1:.2f} m.".format(fov_x, fov_y))
 
     min_x = x - fov_x
     max_x = x + fov_x
     min_y = y - fov_y
     max_y = y + fov_y
 
+    margin = 10
+
+    roll_err = attitude_error_std_rad * np.random.normal()
+    pitch_err = attitude_error_std_rad * np.random.normal()
+    X_err_att = z * math.tan(roll_err)  # position error due to attitude error.
+    Y_err_att = z * math.tan(pitch_err)
+
     for obj in database.objects:
-        if min_x <= obj.x <= max_x and min_y <= obj.y <= max_y:
+        obj_x = obj.x + X_err_att
+        obj_y = obj.y + Y_err_att
+        if min_x <= obj_x <= max_x and min_y <= obj_y <= max_y:
             obj_image = copy.deepcopy(obj)
 
-            X = obj.x - x  # origin at center
-            Y = obj.y - x
+            # origin at center
+            X = obj_x - x
+            Y = obj_y - y
 
-            X_im = X * (image.size_x / 2) / fov_x  # origin at center
+            X_im = X * (image.size_x / 2) / fov_x
             Y_im = Y * (image.size_y / 2) / fov_y
 
-            obj_image.x = X_im + image.size_x / 2  # origin at corner
-            obj_image.y = Y_im + image.size_y / 2
-            image.add_object(obj_image)
+            # origin at corner
+            obj_image.x = X_im + image.size_x / 2 + pixel_error_std * np.random.normal()
+            obj_image.y = Y_im + image.size_y / 2 + pixel_error_std * np.random.normal()
+
+            if margin <= obj_image.x <= image.size_x - margin and margin <= obj_image.y <= image.size_y - margin:
+                image.add_object(obj_image)
 
     return image
 

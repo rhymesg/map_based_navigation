@@ -1,5 +1,6 @@
 import math
 import matplotlib.pyplot as plt
+import numpy as np
 
 from image import generate_database_1, get_aerial_image, get_fov
 import itertools
@@ -28,14 +29,17 @@ def get_intersections(x0, y0, r0, x1, y1, r1):
 
     d = math.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2)
 
-    # non intersecting
+    # Non intersecting
     if d > r0 + r1:
+        print("Non intersecting")
         return None
     # One circle within other
     if d < abs(r0 - r1):
+        print("One circle within other")
         return None
-    # coincident circles
+    # Coincident circles
     if d == 0 and r0 == r1:
+        print("Coincident circles")
         return None
     else:
         a = (r0 ** 2 - r1 ** 2 + d ** 2) / (2 * d)
@@ -53,16 +57,27 @@ def get_intersections(x0, y0, r0, x1, y1, r1):
 
 
 def find_position(database, image):
-    tol_r_perc = 0.01
-    tol_theta = 0.01
-    tol_theta_circle = 0.0001
+    # parameters
+    min_num_obj = 6
+    tol_theta = 0.2  # theta tolerance to determine match
+    tol_r = 0.2   # relative distance tolerance to determine match
+    tol_r_perc = 0.1  # don't use points with distance to the center less than this percentage
+    tol_theta_circle = 0.0001  # theta tolerance to determine circle intersection
     max_iter = 200
+    sig_circle = 5
+
     center_x = image.size_x / 2
     center_y = image.size_y / 2
 
     max_match = 0
+    min_error_std = 1000
     best_x = None
     best_y = None
+
+    result = {'valid': False, 'x': None, 'y': None, 'num_matches': 0}
+
+    if len(image.objects) < min_num_obj:
+        return result
 
     image_object_indices = range(len(image.objects))
     object_indices = range(len(database.objects))
@@ -140,80 +155,160 @@ def find_position(database, image):
                 count_iter += 1
 
             if found:
-                # compare points
-                image_object_indices_set = set(image_object_indices)
-                image_object_indices_set.remove(image_idx_pair[0])
-                image_object_indices_set.remove(image_idx_pair[1])
+                test_xy_list = [(x_cand, y_cand)]
+                # test_xy_list.append((x_cand+sig_circle*np.random.normal(), y_cand+sig_circle*np.random.normal()))
+                # test_xy_list.append(
+                #     (x_cand + sig_circle * np.random.normal(), y_cand + sig_circle * np.random.normal()))
+                # test_xy_list.append(
+                #     (x_cand + sig_circle * np.random.normal(), y_cand + sig_circle * np.random.normal()))
 
-                count_match = 0
-                for image_idx in image_object_indices_set:
-                    object_indices_set = set(object_indices)
-                    object_indices_set.remove(idx_pair[0])
-                    object_indices_set.remove(idx_pair[1])
+                for xy in test_xy_list:
+                    x_cand = xy[0]
+                    y_cand = xy[1]
 
-                    img_obj = image.objects[image_idx]
-                    r, theta = cart_to_polar(img_obj.x, img_obj.y, center_x, center_y)
-                    if r < tol_r_perc * image.size_x:
-                        continue
-                    del_theta = angle_pi_to_pi(theta1 - theta)
+                    # compare points
+                    image_object_indices_set = set(image_object_indices)
+                    image_object_indices_set.remove(image_idx_pair[0])
+                    image_object_indices_set.remove(image_idx_pair[1])
 
-                    object_indices_list = list(object_indices_set)
-                    possible_objects = {}
-                    for idx in object_indices_list:
-                        obj = database.objects[idx]
-                        R, Theta = cart_to_polar(obj.x, obj.y, x_cand, y_cand)
-                        if R < tol_r_perc * database.size_x:
+                    count_match = 2
+                    match_error_list = []
+                    for image_idx in image_object_indices_set:
+                        object_indices_set = set(object_indices)
+                        object_indices_set.remove(idx_pair[0])
+                        object_indices_set.remove(idx_pair[1])
+
+                        img_obj = image.objects[image_idx]
+                        r, theta = cart_to_polar(img_obj.x, img_obj.y, center_x, center_y)
+                        if r < tol_r_perc * image.size_x:
                             continue
-                        del_Theta = angle_pi_to_pi(theta1 - Theta)
-                        if abs(del_Theta - del_theta) < tol_theta:
-                            possible_objects[idx] = abs(del_Theta - del_theta)
+                        del_theta = angle_pi_to_pi(theta1 - theta)
+                        r_norm = r / r1
 
-                    if len(possible_objects) > 0:
-                        min_idx = min(possible_objects, key=possible_objects.get)
-                        object_indices_set.remove(min_idx)
-                        count_match += 1
+                        object_indices_list = list(object_indices_set)
+                        possible_objects = {}
+                        for idx in object_indices_list:
+                            obj = database.objects[idx]
+                            R, Theta = cart_to_polar(obj.x, obj.y, x_cand, y_cand)
+                            if R < tol_r_perc * database.size_x:
+                                continue
+                            del_Theta = angle_pi_to_pi(theta1 - Theta)
+                            R_norm = R / R1
+                            if abs(del_Theta - del_theta) < tol_theta and abs(r_norm - R_norm) < tol_r:
+                                possible_objects[idx] = abs(del_Theta - del_theta)/math.pi + abs(r_norm - R_norm)/r_norm
 
-                if count_match > max_match:
-                    max_match = count_match
-                    best_x = x_cand
-                    best_y = y_cand
+                        if len(possible_objects) > 0:
+                            min_idx = min(possible_objects, key=possible_objects.get)
+                            object_indices_set.remove(min_idx)
+                            count_match += 1
+                            match_error_list.append(possible_objects[min_idx])
 
-    if max_match > len(image.objects)*0.5:
-        print("Estimated x, y: {0:.2f}, {1:.2f}".format(best_x, best_x))
-        print("#. matches: {}".format(max_match))
+                    if count_match >= max_match and count_match >= min_num_obj:
+                        error_std = np.std(np.array(match_error_list))
+                        if error_std < min_error_std:
+                            max_match = count_match
+                            min_error_std = error_std
+                            best_x = x_cand
+                            best_y = y_cand
 
-    return best_x, best_y
+    print("#. matched points: {}/{}".format(max_match, len(image.objects)))
+    print("min_theta_std: {0:.2f}".format(min_error_std))
+
+    result['num_matches'] = max_match
+    result['x'] = best_x
+    result['y'] = best_y
+
+    if result['num_matches'] > len(image.objects) * 0.5 and result['num_matches'] >= min_num_obj and result['x'] is not None and result['y'] is not None:
+        result['valid'] = True
+    else:
+        result['valid'] = False
+
+    return result
 
 
 def run_simulation():
+    database = generate_database_1(size_x=250, size_y=150)
+    # database.resize(250, 150)
+
+    num_samples = 500
+    image_size_x = 640
+    image_size_y = 480
+    fov_x_deg = 45
+    z_true = 100
+    fov_x, fov_y = get_fov(image_size_x, image_size_y, z_true, fov_x_deg)
+    print("fov_x: {0:.2f} m, fov_y: {1:.2f} m.".format(fov_x, fov_y))
+    x_samples = np.random.uniform(fov_x, database.size_x - fov_x, num_samples)
+    y_samples = np.random.uniform(fov_y, database.size_y - fov_y, num_samples)
+
+    errors = []
+    num_image_obj = []
+    num_fp = 0
+    num_matched = 0
+    for x_true, y_true in zip(x_samples, y_samples):
+        image = get_aerial_image(database=database, x=x_true, y=y_true, z=z_true, size_x=image_size_x, size_y=image_size_y,
+                                 fov_x_deg=fov_x_deg, attitude_error_std_rad=0.05*math.pi/180, pixel_error_std=3)
+        num_image_obj.append(len(image.objects))
+        res = find_position(database, image)
+
+        if res['valid']:
+            error = np.linalg.norm(np.array(res['x'] - x_true, res['y'] - y_true))
+            print("error: {0:.2f} m.".format(error))
+            num_matched += 1
+            if error > 15:
+                num_fp += 1
+            else:
+                errors.append(error)
+
+    # print("Average error: {0:.2f} m.".format(np.average(np.array(errors))))
+    print("Error std: {0:.2f} m.".format(np.std(np.array(errors))))
+    print("Largest error: {0:.2f} m.".format(max(errors)))
+    print("Matched images: {}/{}.".format(num_matched, num_samples))
+    print("Num. false positives: {}/{}".format(num_fp, num_matched))
+    print("Average image objects: {}.".format(np.average(np.array(num_image_obj))))
+
+
+def test_simulation():
     # generate database meta image
     database = generate_database_1(size_x=250, size_y=150)
     database.resize(250, 150)
 
-    x_true = 100
-    y_true = 100
+    x_true = 120.4
+    y_true = 92.2
     z_true = 100
-    fov_x_deg = 30
-    image = get_aerial_image(database=database, x=x_true, y=y_true, z=z_true, size_x=640, size_y=480, fov_x_deg=fov_x_deg)
+    fov_x_deg = 45
+    image = get_aerial_image(database=database, x=x_true, y=y_true, z=z_true, size_x=640, size_y=480, fov_x_deg=fov_x_deg, attitude_error_std_rad=0, pixel_error_std=0)
     fov_x, fov_y = get_fov(image.size_x, image.size_y, z_true, fov_x_deg)
 
     find_position(database, image)
 
-    plt.figure()
+    fig, (sub1, sub2) = plt.subplots(2, 1)
     for obj in database.objects:
-        plt.plot(obj.x, obj.y, 'bo')
+        sub1.plot(obj.x, obj.y, 'ko')
 
-    rectangle = plt.Rectangle((x_true - fov_x, y_true - fov_y), fov_x*2, fov_y*2, fc=(0,0,0,0) , ec="black")
-    plt.gca().add_patch(rectangle)
+    rectangle = plt.Rectangle((x_true - fov_x, y_true - fov_y), fov_x*2, fov_y*2, fc=(0,0,0,0) , ec="red")
+    sub1.add_patch(rectangle)
+    sub1.set_xlim([0, 250])
+    sub1.set_ylim([0, 150])
+    sub1.set_xlabel('X (m)')
+    sub1.set_ylabel('Y (m)')
+    sub1.set_aspect('equal')
 
-    plt.figure()
+    sub2.set_xlabel('x (pixel)')
+    sub2.set_ylabel('y (pixel)')
+
     for obj in image.objects:
-        plt.plot(obj.x, obj.y, 'bo')
+        sub2.plot(obj.x, obj.y, 'ko')
+
+    sub2.set_xlim([0, 640])
+    sub2.set_ylim([0, 480])
+    sub2.set_aspect('equal')
 
     plt.show()
 
 
+
 if __name__ == '__main__':
+    # test_simulation()
     run_simulation()
 
 
