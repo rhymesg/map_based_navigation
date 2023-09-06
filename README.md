@@ -5,4 +5,4 @@
 
 # Copyright
 
-This starts from a fork of [https://github.com/rhymesg/map_based_navigation](https://github.com/rhymesg/map_based_navigation).
+This is based on a fork of [https://github.com/rhymesg/map_based_navigation](https://github.com/rhymesg/map_based_navigation).
