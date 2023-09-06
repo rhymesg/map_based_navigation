@@ -1,3 +1,7 @@
+# Copyright (c) 2021 Youngjoo Kim (MIT License)
+# Author: Youngjoo Kim (rhymesg@gmail.com)
+# Related work: https://arxiv.org/abs/2107.00689
+
 import math
 import matplotlib.pyplot as plt
 import numpy as np
