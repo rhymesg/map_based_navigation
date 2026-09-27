@@ -1,6 +1,5 @@
-# Copyright (c) 2021 Youngjoo Kim (MIT License)
-# Author: Youngjoo Kim (rhymesg@gmail.com)
-# Related work: https://arxiv.org/abs/2107.00689
+# Copyright (c) 2021 Youngjoo Kim (MIT License); pattern matching: https://arxiv.org/abs/2107.00689
+# Algorithm: docs/pattern-matching.md; usage and citation: README.md.
 
 import math
 import matplotlib.pyplot as plt
@@ -377,5 +376,4 @@ def test_a_case():
 if __name__ == '__main__':
     # test_a_case()
     run_monte_carlo_simulation()
-
 

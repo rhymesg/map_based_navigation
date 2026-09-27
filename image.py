@@ -1,6 +1,5 @@
-# Copyright (c) 2021 Youngjoo Kim (MIT License)
-# Author: Youngjoo Kim (rhymesg@gmail.com)
-# Related work: https://arxiv.org/abs/2107.00689
+# Copyright (c) 2021 Youngjoo Kim (MIT License); meta-image simulation: https://arxiv.org/abs/2107.00689
+# Inputs and geometry: docs/simulation.md; citation: README.md.
 
 import math
 import copy
