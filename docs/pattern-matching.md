@@ -1,6 +1,17 @@
 # Ground-object pattern matching
 
-This reference maps the aerial localization geometry to [main.py](../main.py) in [map_based_navigation](../README.md). The [research note and journal citations](../README.md#citation) describe the method's origin and subsequent development; this checkout implements the earlier simulation with the departures listed below.
+This guide explains the scene-information approach in the [journal paper](https://doi.org/10.3390/drones8080375) and connects its geometric matching stage to the earlier [Python simulation](../main.py). The full journal-system source cannot be provided; the paper is the primary reference for an independent implementation.
+
+## Scene information and reference database
+
+The transferable idea is to represent both the camera scene and the reference map as ground-object information, then match their spatial patterns rather than raw image appearance.
+
+1. **Scene extraction — Section 2.1:** use deep-learning object detection or instance segmentation to identify objects and extract their labels and center locations in image pixels. The journal demonstrates YOLOv7-seg instance segmentation of buildings and greenhouses.
+2. **Database preparation — Section 3.2:** apply the same scene-extraction method to georeferenced reference imagery and store object labels with geographic center coordinates. Both sides use the same object definitions and representation; the paper also describes manual labeling as an option for preparing reference masks.
+3. **Localization — Section 2.2:** compare relative object geometry between the observed scene and reference database to generate and score candidate map positions. The paper uses relative angles and radius ratios, followed by a weighted position estimate.
+4. **Navigation integration — Section 2.3:** combine the position observations with inertial information through the paper's filtering procedure.
+
+The shared representation is called a *meta image*: object labels paired with locations, expressed in image pixels for the observation and geographic coordinates for the database. Refer to the paper for detector training, coordinate processing, matching tolerances, and flight evaluation; the included simulation begins with point coordinates and does not perform deep-learning extraction or reference-image processing.
 
 ## Problem and representation
 

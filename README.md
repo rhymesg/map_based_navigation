@@ -2,23 +2,29 @@
 
 ## Overview
 
-Python research simulation of aerial map-based localization using ground-object point patterns: match a simulated aerial view to a two-dimensional map and estimate the camera's horizontal position.
+Research guide to aerial map-based navigation using deep-learning scene information and database matching, with an illustrative Python geometry simulation.
 
-This is Youngjoo Kim's simulation associated with the [2021 research note](#citation), which preceded **“Aerial Map-Based Navigation by Ground Object Pattern Matching,” Drones (2024)**. The [canonical repository](https://github.com/rhymesg/map_based_navigation) contains point generation and geometric matching; the journal's object detector, Kalman filter, ROS 2 system, and flight datasets are not included.
+The main idea is:
+
+1. **Extract scene information:** use deep learning to identify ground objects and represent them by their labels and center locations.
+2. **Prepare the reference database:** apply the same extraction method to georeferenced reference imagery, storing the objects in the same representation with geographic coordinates.
+3. **Match the patterns:** compare the observed objects' spatial arrangement with the database to estimate the camera's horizontal location.
+
+Read [“Aerial Map-Based Navigation by Ground Object Pattern Matching,” Drones (2024)](https://doi.org/10.3390/drones8080375) for the method and flight experiments. The [method guide](docs/pattern-matching.md#scene-information-and-reference-database) connects scene extraction, database preparation, and geometric matching to the paper.
+
+The full source code for the journal system cannot be provided. This [repository](https://github.com/rhymesg/map_based_navigation) contains Youngjoo Kim's earlier Python simulation associated with the [2021 research note](#citation), demonstrating the geometric matching stage using point coordinates.
 
 The associated navigation research has a [granted Korean patent](#related-patent).
 
-Use it to study meta-image representation, radius ratios, and circle-intersection position hypotheses for vision-based navigation in GNSS-denied settings.
-
-| Intended use | Scope and prerequisites |
+| Intended use | Starting point |
 |---|---|
-| Learning localization geometry | Run the [small example](example.py) and follow the [algorithm reference](docs/pattern-matching.md); its noiseless result does not validate general accuracy |
-| Adapting the matcher | Repair and validate the [documented implementation limitations](docs/limitations.md#matcher-limitations) before relying on its output |
-| Reproducing the journal experiments | Additional system components and data are required; see [research reproducibility](docs/limitations.md#research-reproducibility) |
+| Understanding the navigation approach | Read the [journal paper](https://doi.org/10.3390/drones8080375) and [method guide](docs/pattern-matching.md) |
+| Developing an independent implementation | Follow the paper's scene representation, database preparation, matching, and filtering procedures |
+| Exploring the matching geometry | Run the [small simulation](example.py); see its [scope and limitations](docs/limitations.md#matcher-limitations) |
 
 ## Installation
 
-Python 3.12 is the verified environment; [requirements.txt](requirements.txt) pins the NumPy and Matplotlib versions used for the example. No external imagery or trained model is required.
+The optional geometry simulation uses Python 3.12 as its verified environment; [requirements.txt](requirements.txt) pins the NumPy and Matplotlib versions used for the example. No external imagery or trained model is required.
 
 Clone the repository:
 
@@ -48,7 +54,7 @@ These commands use a POSIX shell; on Windows, use the environment's `Scripts/pyt
 
 ## Usage
 
-Run the small, noiseless example without opening a figure window:
+To explore the matching geometry, run the small, noiseless example without opening a figure window:
 
 ```bash
 MPLBACKEND=Agg .venv/bin/python example.py
@@ -82,15 +88,15 @@ The [algorithm reference](docs/pattern-matching.md) explains the geometry, imple
 
 ## Citation
 
-For this simulation and its original method, please cite:
-
-> Youngjoo Kim. “Aerial Map-Based Navigation Using Semantic Segmentation and Pattern Matching.” arXiv:2107.00689, 2021; revised 2022, [version 3](https://arxiv.org/abs/2107.00689v3). [doi:10.48550/arXiv.2107.00689](https://doi.org/10.48550/arXiv.2107.00689).
-
-For the subsequent journal method and flight experiments, please cite:
+For the navigation approach and flight experiments, please cite:
 
 > Youngjoo Kim, Seungho Back, Dongchan Song, and Byung-Yoon Lee. “Aerial Map-Based Navigation by Ground Object Pattern Matching.” *Drones*, 8(8), article 375, 2024. [doi:10.3390/drones8080375](https://doi.org/10.3390/drones8080375).
 
-[CITATION.cff](CITATION.cff) provides software metadata, the research note as preferred citation, and the journal paper as a related work; citation requests are separate from license obligations.
+For the earlier simulation and research note, please cite:
+
+> Youngjoo Kim. “Aerial Map-Based Navigation Using Semantic Segmentation and Pattern Matching.” arXiv:2107.00689, 2021; revised 2022, [version 3](https://arxiv.org/abs/2107.00689v3). [doi:10.48550/arXiv.2107.00689](https://doi.org/10.48550/arXiv.2107.00689).
+
+[CITATION.cff](CITATION.cff) lists the journal paper as the preferred reference and the earlier research note as a related work; citation requests are separate from license obligations.
 
 ## Related patent
 

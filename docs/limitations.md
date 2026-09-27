@@ -30,6 +30,7 @@ The matcher now enumerates fresh ordered map pairs for every image pair, uses th
 ## Research reproducibility
 
 - The [algorithm reference](pattern-matching.md) maps the included geometry to the publications and identifies the missing journal weighting, detection, and filtering components.
+- The full source code for the journal system cannot be provided. Use the [paper and method guide](pattern-matching.md#scene-information-and-reference-database) to understand the approach and develop an independent implementation.
 - No training data, model weights, flight logs, RTK ground truth, ROS 2 nodes, or paper-figure reproduction scripts are included.
 - The [journal paper](https://doi.org/10.3390/drones8080375), Data Availability Statement, says its supporting raw data can be requested from the authors; those data are not bundled here and were not obtained for this check.
 - Neither publication's performance results have been reproduced by this documentation update.
