@@ -12,7 +12,7 @@ The associated navigation research has a [granted Korean patent](#related-patent
 |---|---|
 | Understanding the navigation approach | Read the [journal paper](https://doi.org/10.3390/drones8080375) and [method guide](docs/pattern-matching.md) |
 | Developing an independent implementation | Follow the paper's scene representation, database preparation, matching, and filtering procedures |
-| Exploring the matching geometry | Run the [small simulation](example.py); see its [geometry details](docs/limitations.md#matcher-limitations) |
+| Exploring the matching geometry | Run the [small simulation](example.py); see its [geometry details](docs/simulation.md#inputs-and-coordinates) |
 
 The [scene representation and matching procedure](docs/pattern-matching.md) can guide implementations in Python, C++, or other languages; the Python example illustrates the matching geometry.
 
@@ -72,7 +72,7 @@ MPLBACKEND=Agg .venv/bin/python example.py
 
 [example.py](example.py) prints the match count, validity, estimated map position, and Euclidean position error. See the [simulation guide](docs/simulation.md) for expected output, coordinate conventions, parameters, and the optional plot.
 
-The original `main.py` entry point runs a Monte Carlo simulation with [conditional error statistics](docs/limitations.md#monte-carlo-statistics).
+The original `main.py` entry point runs a Monte Carlo simulation with [conditional error statistics](docs/implementation-notes.md#monte-carlo-statistics).
 
 ## Implementation scope
 
@@ -90,6 +90,8 @@ These check rotation, detection order, and repeated points on constructed geomet
 
 ## Citation
 
+For academic attribution, please acknowledge this repository when adapting its code or examples.
+
 For the navigation approach and flight experiments, please cite:
 
 > Youngjoo Kim, Seungho Back, Dongchan Song, and Byung-Yoon Lee. “Aerial Map-Based Navigation by Ground Object Pattern Matching.” *Drones*, 8(8), article 375, 2024. [doi:10.3390/drones8080375](https://doi.org/10.3390/drones8080375).
@@ -106,4 +108,4 @@ Related granted Korean patent for the navigation research: [KR102737055B1 — De
 
 ## License and provenance
 
-The code includes an [MIT license](LICENSE). [Source provenance](docs/limitations.md#provenance) identifies the inspected revision and the scope of the supplied point data.
+The code includes an [MIT license](LICENSE). [Source provenance](docs/implementation-notes.md#provenance) identifies the inspected revision and the scope of the supplied point data.

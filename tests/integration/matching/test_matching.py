@@ -3,7 +3,7 @@ import contextlib
 import io
 import copy, math
 from image import Image
-from main import find_position
+from main import find_position, get_intersections
 
 POINTS = [(22, 30), (35, 18), (62, 25), (80, 38), (72, 72), (48, 80), (25, 70), (40, 45)]
 TRUE = (50.0, 50.0)
@@ -21,6 +21,20 @@ def fixture(degrees=0, order=None):
     return database, image
 
 class MatchingChecks(unittest.TestCase):
+    def test_duplicate_map_landmark_preserves_position(self):
+        database, image = fixture()
+        database.objects.append(copy.deepcopy(database.objects[0]))
+        result = find_position(database, image)
+        self.assertTrue(result['valid'])
+        self.assertEqual(result['num_matches'], 8)
+        self.assertLess(math.hypot(result['x']-50, result['y']-50), 0.001)
+
+    def test_tangent_circles_have_one_shared_position(self):
+        self.assertEqual(get_intersections(0, 0, 2, 4, 0, 2), (2, 0, 2, 0))
+
+    def test_disjoint_circles_have_no_position(self):
+        self.assertIsNone(get_intersections(0, 0, 1, 4, 0, 1))
+
     def test_rotation_and_detection_order(self):
         for degrees, order in [(0,None), (15,None),
                                (15,[4,1,7,0,6,3,2,5]),

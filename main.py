@@ -34,19 +34,16 @@ def get_intersections(x0, y0, r0, x1, y1, r1):
 
     # Non intersecting
     if d > r0 + r1:
-        print("Non intersecting")
         return None
     # One circle within other
     if d < abs(r0 - r1):
-        print("One circle within other")
         return None
     # Coincident circles
     if d == 0 and r0 == r1:
-        print("Coincident circles")
         return None
     else:
         a = (r0 ** 2 - r1 ** 2 + d ** 2) / (2 * d)
-        h = math.sqrt(r0 ** 2 - a ** 2)
+        h = math.sqrt(max(0.0, r0 ** 2 - a ** 2))
         x2 = x0 + a * (x1 - x0) / d
         y2 = y0 + a * (y1 - y0) / d
         x3 = x2 + h * (y1 - y0) / d
@@ -118,6 +115,8 @@ def find_position(database, image):
 
             # Compute the Euclidean distance between the two database objects.
             d = math.sqrt((obj1.x - obj2.x)**2 + (obj1.y - obj2.y)**2)
+            if d == 0:
+                continue
 
             # Calculate the minimum and maximum possible distances for the first object based on the geometry.
             R1_min = d / (1 + rn2)
@@ -125,6 +124,8 @@ def find_position(database, image):
                 R1_max = database.size_x
             else:
                 R1_max = min(database.size_x, d / abs(1 - rn2))
+            if R1_min > R1_max:
+                continue
 
             # Start the iterative process to find the intersection of circles.
             R1 = (R1_min + R1_max) / 2  # Initial guess for R1.
@@ -138,7 +139,8 @@ def find_position(database, image):
             while count_iter < max_iter:
                 # Calculate circle intersections based on current R1 and the normalized distance.
                 res = get_intersections(obj1.x, obj1.y, R1, obj2.x, obj2.y, R1 * rn2)
-                assert res is not None  # Ensure that we get a result.
+                if res is None:
+                    break
 
                 # Extract intersection points from the result.
                 x3, y3, x4, y4 = res
@@ -373,4 +375,3 @@ def test_a_case():
 if __name__ == '__main__':
     # test_a_case()
     run_monte_carlo_simulation()
-

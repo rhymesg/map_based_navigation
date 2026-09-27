@@ -22,7 +22,7 @@ The shared representation is called a *meta image*: object labels paired with lo
 
 ## Geometry and procedure
 
-Both publications describe a random sample consensus (RANSAC)-based approach to testing position hypotheses. This code deterministically enumerates pairs rather than randomly sampling them; each image pair now receives a fresh map-pair iterator. [Remaining search limits](limitations.md#matcher-limitations) still apply.
+Both publications describe a random sample consensus (RANSAC)-based approach to testing position hypotheses. This code deterministically enumerates pairs rather than randomly sampling them; each image pair now receives a fresh map-pair iterator. [Matching details](implementation-notes.md#matching-procedure) still apply.
 
 For image center $c$ and object $p_i$, `cart_to_polar` computes $r_i=\|p_i-c\|$ and $\theta_i=\operatorname{atan2}(p_{iy}-c_y,p_{ix}-c_x)$. A candidate map center must explain the pair's radius ratio $q=r_j/r_i$ and wrapped angular difference.
 
@@ -57,8 +57,8 @@ The journal's Eq. (4) states the circle-intersection condition underlying these 
 
 The code uses `theta1 - theta2`, following the research note's sign convention; the journal defines the reversed difference. Additional map-point comparisons now use the candidate's map reference angle, and angular residuals are wrapped at the branch cut. This corrects the relative-angle computation; it does not reproduce the complete journal system.
 
-## Use and limitations
+## Use and adaptation
 
 Run [example.py](../example.py) using the [simulation guide](simulation.md). The example exercises one noiseless, axis-aligned view and the actual matcher.
 
-Remaining scoring, search bounds, and degenerate-geometry failures are detailed in [implementation limitations](limitations.md#matcher-limitations). Treat those as constraints on this checkout rather than properties of the published method.
+The [matching procedure](implementation-notes.md#matching-procedure) describes candidate scoring, search bounds, and geometric input contracts for the Python example.

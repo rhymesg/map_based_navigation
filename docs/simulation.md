@@ -44,7 +44,7 @@ The displayed `min_theta_std` is the standard deviation of combined matching res
 - Projection crops to the footprint, scales to pixels, adds independent pixel noise, and excludes points within the configured border margin.
 - The matcher receives neither height nor camera field of view; those are simulator inputs only.
 
-Use positive image dimensions and nondegenerate point configurations. Input validation is limited to coordinate assertions; see [failure behavior](limitations.md#matcher-limitations).
+Use positive image dimensions and nondegenerate point configurations. The matcher skips coincident map pairs and radius intervals without intersections; see the [matching procedure](implementation-notes.md#matching-procedure).
 
 ## Parameters and randomness
 
@@ -65,4 +65,4 @@ On a machine with a graphical Matplotlib backend, display the database footprint
 
 `test_a_case` prints matching diagnostics and shows a two-panel figure; it does not plot the estimated position or return the match result. This graphical workflow was not manually verified.
 
-The historical `run_monte_carlo_simulation` samples positions, applies noise, and reports match counts, false positives, and error standard deviation. Position error uses both horizontal coordinates; the [statistics are conditional on valid, sufficiently close matches](limitations.md#monte-carlo-statistics), so they do not measure unconditional navigation accuracy.
+The historical `run_monte_carlo_simulation` samples positions, applies noise, and reports match counts, false positives, and error standard deviation. Position error uses both horizontal coordinates; the [statistics are conditional on valid, sufficiently close matches](implementation-notes.md#monte-carlo-statistics), so they do not measure unconditional navigation accuracy.

@@ -6,4 +6,4 @@ From the repository root after installing `requirements.txt`:
 MPLBACKEND=Agg python -m unittest discover -s tests/integration/matching -v
 ```
 
-Eight asymmetric synthetic landmarks check noiseless localization under rotation, shuffled and reversed detection order, and repeated detections. Expected positions are set by the constructed geometry, with tolerance 0.001 map units. These checks do not establish noisy or real-world navigation accuracy.
+Eight asymmetric synthetic landmarks check localization under rotation, shuffled and reversed detection order, repeated detections, and duplicate map landmarks. Circle fixtures check tangent and disjoint pairs. Expected positions follow the constructed geometry, with tolerance 0.001 map units.
