@@ -1,6 +1,6 @@
 # Simulation and input reference
 
-This guide explains how to run and adapt the point-pattern simulation in [map_based_navigation](../README.md). Complete the [installation](../README.md#installation) first and run commands from the repository root.
+This guide explains how to run and adapt the point-pattern simulation in [map_based_navigation](../README.md). Complete the [installation](../README.md#examples) first and run commands from the repository root.
 
 ## Small example
 
@@ -65,4 +65,4 @@ On a machine with a graphical Matplotlib backend, display the database footprint
 
 `test_a_case` prints matching diagnostics and shows a two-panel figure; it does not plot the estimated position or return the match result. This graphical workflow was not manually verified.
 
-The historical `run_monte_carlo_simulation` samples positions, applies noise, and attempts to report match counts, false positives, and error standard deviation. Its [error calculation omits the y component](limitations.md#monte-carlo-statistics); repair and validate it before interpreting those statistics as horizontal position errors.
+The historical `run_monte_carlo_simulation` samples positions, applies noise, and reports match counts, false positives, and error standard deviation. Position error uses both horizontal coordinates; the [statistics are conditional on valid, sufficiently close matches](limitations.md#monte-carlo-statistics), so they do not measure unconditional navigation accuracy.
