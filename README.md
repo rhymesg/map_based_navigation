@@ -6,6 +6,8 @@ Python research simulation of aerial map-based localization using ground-object 
 
 This is Youngjoo Kim's simulation associated with the [2021 research note](#citation), which preceded **“Aerial Map-Based Navigation by Ground Object Pattern Matching,” Drones (2024)**. The [canonical repository](https://github.com/rhymesg/map_based_navigation) contains point generation and geometric matching; the journal's object detector, Kalman filter, ROS 2 system, and flight datasets are not included.
 
+The associated navigation research has a [granted Korean patent](#related-patent).
+
 Use it to study meta-image representation, radius ratios, and circle-intersection position hypotheses for vision-based navigation in GNSS-denied settings.
 
 | Intended use | Scope and prerequisites |
@@ -90,8 +92,10 @@ For the subsequent journal method and flight experiments, please cite:
 
 [CITATION.cff](CITATION.cff) provides software metadata, the research note as preferred citation, and the journal paper as a related work; citation requests are separate from license obligations.
 
-## License and patent
+## Related patent
+
+Related granted Korean patent for the navigation research: [KR102737055B1 — Device and method for determining position of aerial vehicle](https://patents.google.com/patent/KR102737055B1/en).
+
+## License and provenance
 
 The code includes an [MIT license](LICENSE). [Provenance and limitations](docs/limitations.md#provenance) identify the inspected revision and the scope of the supplied point data.
-
-Related granted Korean patent: [KR102737055B1 — Device and method for determining position of aerial vehicle](https://patents.google.com/patent/KR102737055B1/en).
