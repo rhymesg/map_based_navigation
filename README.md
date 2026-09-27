@@ -12,7 +12,9 @@ The associated navigation research has a [granted Korean patent](#related-patent
 |---|---|
 | Understanding the navigation approach | Read the [journal paper](https://doi.org/10.3390/drones8080375) and [method guide](docs/pattern-matching.md) |
 | Developing an independent implementation | Follow the paper's scene representation, database preparation, matching, and filtering procedures |
-| Exploring the matching geometry | Run the [small simulation](example.py); see its [scope and limitations](docs/limitations.md#matcher-limitations) |
+| Exploring the matching geometry | Run the [small simulation](example.py); see its [geometry details](docs/limitations.md#matcher-limitations) |
+
+The [scene representation and matching procedure](docs/pattern-matching.md) can guide implementations in Python, C++, or other languages; the Python example illustrates the matching geometry.
 
 ## Method
 
@@ -28,9 +30,9 @@ The main idea is:
 |---|---|---|
 | Point-pattern position hypotheses and matching | Research note §II-B, Algorithm 1; journal §2.2, Algorithms 1–2 | [main.py](main.py): `find_position`, `get_intersections`; [example.py](example.py) |
 | Simulated meta images and attitude/pixel noise | Research note §III-A | [image.py](image.py): `Image`, `get_aerial_image`, `generate_database_1`; [simulation guide](docs/simulation.md) |
-| Journal weighted candidate estimate, Eqs. (1)–(3) | Journal §2.2.2 | Not implemented; see [paper-to-code mapping](docs/pattern-matching.md) |
+| Journal weighted candidate estimate, Eqs. (1)–(3) | Journal §2.2.2 | [Paper method reference](docs/pattern-matching.md), for independent implementation |
 
-The [algorithm reference](docs/pattern-matching.md) explains the geometry, implementation choices, and departures from the publications.
+The [algorithm reference](docs/pattern-matching.md) explains the geometry and connects the published procedures to the simulation.
 
 ## Examples
 
@@ -70,11 +72,11 @@ MPLBACKEND=Agg .venv/bin/python example.py
 
 [example.py](example.py) prints the match count, validity, estimated map position, and Euclidean position error. See the [simulation guide](docs/simulation.md) for expected output, coordinate conventions, parameters, and the optional plot.
 
-The original `main.py` entry point runs a Monte Carlo simulation with [conditional error statistics](docs/limitations.md#monte-carlo-statistics); it is not the quick-start command.
+The original `main.py` entry point runs a Monte Carlo simulation with [conditional error statistics](docs/limitations.md#monte-carlo-statistics).
 
 ## Implementation scope
 
-The full source was developed as part of company research and cannot be publicly released. This repository contains Youngjoo Kim's earlier Python point-geometry simulation associated with the [2021 research note](#citation), rather than the journal system's detector, weighted position estimator, or navigation fusion. See the [paper-to-code mapping](docs/pattern-matching.md) and [simulation limits](docs/limitations.md) when adapting the illustration.
+The full source was developed as part of company research and cannot be publicly released. This repository contains Youngjoo Kim's earlier Python point-geometry simulation associated with the [2021 research note](#citation); the [paper method reference](docs/pattern-matching.md) covers the journal approach for independent implementation.
 
 ### Checks
 
@@ -104,4 +106,4 @@ Related granted Korean patent for the navigation research: [KR102737055B1 — De
 
 ## License and provenance
 
-The code includes an [MIT license](LICENSE). [Provenance and limitations](docs/limitations.md#provenance) identify the inspected revision and the scope of the supplied point data.
+The code includes an [MIT license](LICENSE). [Source provenance](docs/limitations.md#provenance) identifies the inspected revision and the scope of the supplied point data.
