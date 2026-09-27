@@ -16,7 +16,7 @@ Use it to study meta-image representation, radius ratios, and circle-intersectio
 
 ## Installation
 
-Python 3.12 is the verified environment; [requirements.txt](requirements.txt) pins the NumPy and Matplotlib versions used for the example. No external imagery, trained model, or local `ref/` material is required.
+Python 3.12 is the verified environment; [requirements.txt](requirements.txt) pins the NumPy and Matplotlib versions used for the example. No external imagery or trained model is required.
 
 Clone the repository:
 
@@ -90,8 +90,8 @@ For the subsequent journal method and flight experiments, please cite:
 
 [CITATION.cff](CITATION.cff) provides software metadata, the research note as preferred citation, and the journal paper as a related work; citation requests are separate from license obligations.
 
-## License and provenance
+## License and patent
 
 The code includes an [MIT license](LICENSE). [Provenance and limitations](docs/limitations.md#provenance) identify the inspected revision and the scope of the supplied point data.
 
-The prior README links [patent KR102737055B1](https://patents.google.com/patent/KR102737055B1/en) and reports PCT and US filings; the filing statements are retained as provenance and have not been independently verified here. Local research materials in `ref/` are gitignored and are not runtime dependencies.
+Related granted Korean patent: [KR102737055B1 — Device and method for determining position of aerial vehicle](https://patents.google.com/patent/KR102737055B1/en).
