@@ -12,7 +12,7 @@ Research guide to aerial localization using deep-learning scene extraction and g
 
 ## Publication boundaries
 
-Keep the [README](../README.md) as the repository homepage and retain the [citation metadata](../CITATION.cff). Lead with the paper's scene-extraction and database-matching idea. Identify the included code as an earlier geometry simulation; the full journal-system source cannot be provided.
+Keep the [README](../README.md) as the repository homepage and retain the [citation metadata](../CITATION.cff). Lead with the paper's scene-extraction and database-matching idea. Identify the included code as an earlier geometry simulation; the full source was developed as part of company research and cannot be publicly released.
 
 ## Discovery observations
 

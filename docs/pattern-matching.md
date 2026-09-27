@@ -1,6 +1,6 @@
 # Ground-object pattern matching
 
-This guide explains the scene-information approach in the [journal paper](https://doi.org/10.3390/drones8080375) and connects its geometric matching stage to the earlier [Python simulation](../main.py). The full journal-system source cannot be provided; the paper is the primary reference for an independent implementation.
+This guide explains the scene-information approach in the [journal paper](https://doi.org/10.3390/drones8080375) and connects its geometric matching stage to the earlier [Python simulation](../main.py). The full source was developed as part of company research and cannot be publicly released; the paper is the primary reference for an independent implementation.
 
 ## Scene information and reference database
 

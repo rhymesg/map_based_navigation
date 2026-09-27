@@ -12,7 +12,7 @@ The main idea is:
 
 Read [“Aerial Map-Based Navigation by Ground Object Pattern Matching,” Drones (2024)](https://doi.org/10.3390/drones8080375) for the method and flight experiments. The [method guide](docs/pattern-matching.md#scene-information-and-reference-database) connects scene extraction, database preparation, and geometric matching to the paper.
 
-The full source code for the journal system cannot be provided. This [repository](https://github.com/rhymesg/map_based_navigation) contains Youngjoo Kim's earlier Python simulation associated with the [2021 research note](#citation), demonstrating the geometric matching stage using point coordinates.
+The full source was developed as part of company research and cannot be publicly released. This [repository](https://github.com/rhymesg/map_based_navigation) contains Youngjoo Kim's earlier Python simulation associated with the [2021 research note](#citation), demonstrating the geometric matching stage using point coordinates.
 
 The associated navigation research has a [granted Korean patent](#related-patent).
 
