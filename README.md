@@ -54,7 +54,7 @@ MPLBACKEND=Agg .venv/bin/python example.py
 
 [example.py](example.py) prints the match count, validity, estimated map position, and Euclidean position error. See the [simulation guide](docs/simulation.md) for expected output, coordinate conventions, parameters, and the optional plot.
 
-The original `main.py` entry point runs a Monte Carlo simulation with a [known error-metric defect](docs/limitations.md#monte-carlo-statistics); it is not the quick-start command.
+The original `main.py` entry point runs a Monte Carlo simulation with [conditional error statistics](docs/limitations.md#monte-carlo-statistics); it is not the quick-start command.
 
 ## Development
 
@@ -64,7 +64,7 @@ Run the example above as a smoke check and check Python syntax:
 .venv/bin/python -m compileall -q main.py image.py example.py
 ```
 
-No automated scientific validation suite is supplied. [Verification status](docs/limitations.md#verification-status) records what was checked and what remains unverified.
+[Synthetic regression checks](tests/integration/matching/README.md) cover rotation, detection order, and repeated points; they do not validate real-world accuracy. [Verification status](docs/limitations.md#verification-status) records what was checked and what remains unverified.
 
 Report issues through the [issue tracker](https://github.com/rhymesg/map_based_navigation/issues), including the commit, dependency versions, input coordinates, random seed, and traceback or unexpected result. [Repository metadata](docs/repository-metadata.md) contains a proposed GitHub description and topics.
 

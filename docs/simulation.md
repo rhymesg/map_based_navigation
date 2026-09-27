@@ -15,12 +15,12 @@ The example seeds NumPy with zero and uses the supplied point database. Both noi
 Observed output with Python 3.12.14 and the pinned dependencies on macOS arm64:
 
 ```text
-#. matched points: 10/12
+#. matched points: 11/12
 min_theta_std: 0.00
 Image objects: 12
 Valid: True
-Estimated position (m): (120.406, 92.201)
-Position error (m): 0.006058
+Estimated position (m): (120.400, 92.200)
+Position error (m): 0.000173
 ```
 
 The displayed `min_theta_std` is the standard deviation of combined matching residuals, not position uncertainty. This is a smoke example, not a reproduction of either publication's reported accuracy; the position error is an observation for this input, not a general tolerance or accuracy guarantee.

@@ -90,7 +90,6 @@ def find_position(database, image):
     image_object_indices = range(len(image.objects))
     object_indices = range(len(database.objects))
     image_object_idx_pairs = itertools.combinations(image_object_indices, 2)
-    object_idx_pairs = itertools.combinations(object_indices, 2)
 
     # Iterate over all pairs of image objects.
     for image_idx_pair in image_object_idx_pairs:
@@ -112,7 +111,7 @@ def find_position(database, image):
         theta_12 = angle_pi_to_pi(theta1 - theta2)  # Calculate the angular difference and wrap it within [-π, π].
 
         # Iterate over all pairs of database objects.
-        for idx_pair in object_idx_pairs:
+        for idx_pair in itertools.permutations(object_indices, 2):
             # Get the two database objects for this pair.
             obj1 = database.objects[idx_pair[0]]
             obj2 = database.objects[idx_pair[1]]
@@ -198,17 +197,15 @@ def find_position(database, image):
                 image_object_indices_set.remove(image_idx_pair[0])
                 image_object_indices_set.remove(image_idx_pair[1])
 
+                _, Theta1 = cart_to_polar(obj1.x, obj1.y, x_cand, y_cand)
+                object_indices_set = set(object_indices) - set(idx_pair)
+
                 # Initialize match count and error list.
                 # Start with a count of 2, as one pair is already matched.
                 count_match = 2
                 match_error_list = []
                 # Iterate over remaining image objects to find additional matches.
                 for image_idx in image_object_indices_set:
-                    # Create a set of database object indices excluding the pair already used.
-                    object_indices_set = set(object_indices)
-                    object_indices_set.remove(idx_pair[0])
-                    object_indices_set.remove(idx_pair[1])
-
                     # Get the next image object to compare.
                     img_obj = image.objects[image_idx]
                     r, theta = cart_to_polar(img_obj.x, img_obj.y, center_x, center_y)
@@ -230,11 +227,11 @@ def find_position(database, image):
                         if R < tol_r_perc * database.size_x:
                             continue
                         # Calculate angular difference and normalized distance for the database object.
-                        del_Theta = angle_pi_to_pi(theta1 - Theta)
+                        del_Theta = angle_pi_to_pi(Theta1 - Theta)
                         R_norm = R / R1
                         # If the differences are within tolerances, store them as possible matches.
-                        if abs(del_Theta - del_theta) < tol_theta and abs(r_norm - R_norm) < tol_r:
-                            possible_objects[idx] = abs(del_Theta - del_theta)/math.pi + abs(r_norm - R_norm)/r_norm
+                        if abs(angle_pi_to_pi(del_Theta - del_theta)) < tol_theta and abs(r_norm - R_norm) < tol_r:
+                            possible_objects[idx] = abs(angle_pi_to_pi(del_Theta - del_theta))/math.pi + abs(r_norm - R_norm)/r_norm
 
                     # If there are possible matches, choose the one with the smallest error.
                     if len(possible_objects) > 0:
@@ -306,7 +303,7 @@ def run_monte_carlo_simulation():
         res = find_position(database, image)
 
         if res['valid']:
-            error = np.linalg.norm(np.array(res['x'] - x_true, res['y'] - y_true))
+            error = math.hypot(res['x'] - x_true, res['y'] - y_true)
             print("error: {0:.2f} m.".format(error))
             num_matched += 1
             if error > 15:
